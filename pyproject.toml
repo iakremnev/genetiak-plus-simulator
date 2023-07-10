@@ -12,7 +12,8 @@ readme = "README.md"
 dependencies = [
     "confluent-kafka",
     "pandas",
-    "openpyxl"
+    "openpyxl",
+    "sqlalchemy"
 ]
 dynamic = ["version"]
 
