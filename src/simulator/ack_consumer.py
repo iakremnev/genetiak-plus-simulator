@@ -6,7 +6,7 @@ from confluent_kafka import Consumer, Producer
 
 
 KAFKA_SERVER = os.getenv("KAFKA_SERVER")
-TOPICS = ["sim_file1", "sim_file2", "sim_file3"]
+TOPICS = ["topic1", "topic2", "topic3"]
 
 
 class Acknowledger:
