@@ -1,0 +1,43 @@
+services:
+  kafka:
+    image: bitnami/kafka:3.2.3
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    expose:
+      - 9092
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    ports:
+      - 8080:8080
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=kafka-simulator-test
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka:9092
+
+  producer:
+    build: .
+    command: "bash -c 'sleep 8 && python -m simulator.producer --delay 400 /data/sim_file1.xlsx /data/sim_file2.xlsx /data/sim_file3.xlsx'"
+    environment:
+      - KAFKA_SERVER=kafka:9092
+    depends_on:
+      - kafka
+    volumes:
+      - ./data:/data
+
+  db_consumer:
+    build: .
+    command: "bash -c 'sleep 12 && python -m simulator.db_consumer'"
+    environment:
+      - KAFKA_SERVER=kafka:9092
+    depends_on:
+      - kafka
+
+  ack_consumer:
+    build: .
+    command: "bash -c 'sleep 12 && python -m simulator.ack_consumer'"
+    environment:
+      - KAFKA_SERVER=kafka:9092
+    depends_on:
+      - kafka
