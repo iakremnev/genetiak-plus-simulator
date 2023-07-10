@@ -8,7 +8,6 @@ from concurrent.futures import ThreadPoolExecutor
 import pandas as pd
 from confluent_kafka import Producer
 
-
 MAX_THREADS = 3
 
 
@@ -55,7 +54,6 @@ def stream_events(source: os.PathLike, topic: str, broker_address: str, max_dela
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Async message producer reading data from feature tables")
-    parser.add_argument("--broker", default="localhost:9092", help="Kafka server address")
     parser.add_argument("--delay", type=int, default=0, help="Maximum delay between messages (ms)")
     parser.add_argument("data", nargs="+", help="Feature table in xlsx format")
 
@@ -68,7 +66,7 @@ if __name__ == "__main__":
 
     with ThreadPoolExecutor(MAX_THREADS) as pool:
         pool.map(
-            functools.partial(stream_events, broker_address=args.broker, max_delay=args.delay),
+            functools.partial(stream_events, broker_address=os.getenv("KAFKA_SERVER"), max_delay=args.delay),
             args.data,
             [get_topic(file) for file in args.data],
         )
