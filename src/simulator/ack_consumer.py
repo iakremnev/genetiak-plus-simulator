@@ -24,9 +24,9 @@ class Acknowledger:
 
     def __init__(self, cache: Mapping[str, set[str]]) -> None:
         self.consumer = Consumer(
-            {"bootstrap.server": KAFKA_SERVER, "group.id": "acker", "auto.offset.reset": "earliest"}
+            {"bootstrap.servers": KAFKA_SERVER, "group.id": "acker", "auto.offset.reset": "earliest"}
         )
-        self.producer = Producer({"bootstrap.server": KAFKA_SERVER})
+        self.producer = Producer({"bootstrap.servers": KAFKA_SERVER})
         self.cache = cache
 
         self.consumer.subscribe(TOPICS)
@@ -55,7 +55,7 @@ class Acknowledger:
         self.producer.poll(0)
 
         data = {"id": id}
-        self.producer.produce("ack", data)
+        self.producer.produce("ack", json.dumps(data).encode())
 
         self.producer.flush()
 
@@ -68,7 +68,8 @@ class Acknowledger:
             if message is None:
                 continue
 
-            event_id = json.loads(message.value()).get("id")
+            print(message, message.value())
+            event_id = str(int(json.loads(message.value()).get("id")))
 
             if event_id is None:
                 print("Malformed event")

@@ -48,7 +48,7 @@ def run(consumer: Consumer) -> None:
                 print(f"Consumer error: {message.error()}")
                 continue
 
-            print(f"Received message in topic {message.topic()}")
+            print(f"Received message in topic {message.topic()} @ offset {message.offset()}")
             payload = json.loads(message.value())
             dump_event_to_db(payload, message.topic())
 
@@ -58,7 +58,7 @@ def run(consumer: Consumer) -> None:
 
 if __name__ == "__main__":
     # Set up database and connection
-    engine = create_engine("sqlite://", echo=True)
+    engine = create_engine("sqlite://", echo=False)
     ORMBase.metadata.create_all(engine)
 
     # Set up Kafka consumer
