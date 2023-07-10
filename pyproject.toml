@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simulator"
+authors = [
+    {name = "Ivan Kremnev"}
+]
+description = "Data pipeline simulator"
+readme = "README.md"
+requires-python = 
+dependencies = [
+    "confluent-kafka",
+
+]
+dynamic = ["version"]
+
+[project.scripts]
+producer =

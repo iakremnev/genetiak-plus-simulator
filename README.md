@@ -1,2 +1,3 @@
 # genetiak-plus-simulator
-Data pipeline simulator exercise
+
+Streaming data pipeline simulator consisting of a Kafka producer, a consumer, a database.
