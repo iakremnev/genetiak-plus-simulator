@@ -27,6 +27,19 @@ def get_topic(filename: os.PathLike) -> str:
 
 
 def stream_events(source: os.PathLike, topic: str, broker_address: str, max_delay: int = 0) -> None:
+    """Streams feature rows from source table as event to Kafka
+
+    Parameters
+    ----------
+    source
+        Xlsx spreadsheet with data
+    topic
+        Destination Kafka topic
+    broker_address
+        Destination Kafka server address
+    max_delay, optional
+        Maximum delay between events (ms), by default 0
+    """
     df = pd.read_excel(source, na_values="NA")
     producer = Producer({"bootstrap.servers": broker_address})
 
