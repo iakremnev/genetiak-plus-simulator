@@ -7,9 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from simulator.orm import Base as ORMBase
-from simulator.orm import SimRel1, SimRel2, SimRel3
+from simulator.orm import DataModel2, DataModel1, DataModel3
 
-TOPIC_TO_ORM = {"sim_file1": SimRel1, "sim_file2": SimRel2, "sim_file3": SimRel3}
+TOPIC_TO_ORM = {"topic1": DataModel2, "topic2": DataModel1, "topic3": DataModel3}
 
 
 def dump_event_to_db(event: dict, topic: str) -> None:
@@ -24,10 +24,10 @@ def dump_event_to_db(event: dict, topic: str) -> None:
     """
     try:
         model = TOPIC_TO_ORM[topic]
-        relation = model(**event)
+        instance = model(**event)
 
         with Session(engine) as session:
-            session.add(relation)
+            session.add(instance)
             session.commit()
     except TypeError:
         print("ERROR: Malformed event, skip dumping")
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     consumer = Consumer(
         {"bootstrap.servers": kafka_server_addr, "group.id": "db_dump", "auto.offset.reset": "earliest"}
     )
-    consumer.subscribe(["sim_file1", "sim_file2", "sim_file3"])
+    consumer.subscribe(list(TOPIC_TO_ORM.keys()))
 
     run(consumer)
     consumer.close()

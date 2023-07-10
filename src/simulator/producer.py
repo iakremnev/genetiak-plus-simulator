@@ -9,6 +9,7 @@ import pandas as pd
 from confluent_kafka import Producer
 
 MAX_THREADS = 3
+TOPICS = ["topic1", "topic2", "topic3"]
 
 
 def delivery_report(err, msg):
@@ -22,7 +23,8 @@ def delivery_report(err, msg):
 
 def get_topic(filename: os.PathLike) -> str:
     """Generates Kafka topic name for particular data source file"""
-    return os.path.splitext(os.path.basename(filename))[0]
+    stem = os.path.splitext(os.path.basename(filename))[0]
+    return stem.replace("sim_file", "topic")
 
 
 def stream_events(source: os.PathLike, topic: str, broker_address: str, max_delay: int = 0) -> None:

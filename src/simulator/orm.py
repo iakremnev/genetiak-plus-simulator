@@ -8,10 +8,10 @@ class Base(DeclarativeBase):
     pass
 
 
-class SimRel2(Base):
+class DataModel1(Base):
     """Declarative ORM example"""
 
-    __tablename__ = "sim_file2"
+    __tablename__ = "data1"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     feature1: Mapped[Optional[int]]
@@ -35,9 +35,9 @@ def create_table(table_name: str, feature_column_names: list[str], feature_colum
     )
 
 
-class SimRel1(Base):
-    __table__ = create_table("sim_file1", [f"feature{i}" for i in range(1, 30)])
+class DataModel2(Base):
+    __table__ = create_table("data2", [f"feature{i}" for i in range(1, 30)])
 
 
-class SimRel3(Base):
-    __table__ = create_table("sim_file3", [f"feature{i}" for i in range(1, 26)])
+class DataModel3(Base):
+    __table__ = create_table("data3", [f"feature{i}" for i in range(1, 26)])
