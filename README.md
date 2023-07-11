@@ -38,7 +38,29 @@ It can be seen that the *ack* events go always after the latest occurrence this 
 
 ![](img/delay.png)
 
-## Point of interest
+## Testing
+
+To run (a little) unit tests and generate coverage report, first you need to install simulator package locally in your virtual environment. That's as simple as
+
+```bash
+$ pip install ".[test]"
+```
+
+Then run
+
+```bash
+$ pytest --cov=simulator test/unit
+```
+
+To perform end-to-end integration test, run
+
+```bash
+$ ./test/integration/test_db_delivery.sh
+```
+
+Testing Kafka topic states is out of scope of this project but can be easily inspected using UI at http://localhost:8080 while the cluster is up.
+
+## Points of interest
 
 * Producer simulates data source concurrency through multithreading, which is a good mechanism even in presence of GIL.
 * Data models are described with SQLAlchemy declarative ORMs, but [pydantic](https://github.com/tiangolo/pydantic-sqlalchemy) or [marshmallow](https://github.com/marshmallow-code/marshmallow-sqlalchemy) can be used to more precisely validate data integrity.
