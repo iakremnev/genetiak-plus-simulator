@@ -69,7 +69,7 @@ class Acknowledger:
             if message is None:
                 continue
 
-            print(message, message.value())
+            print(message.value())
             event_id = str(int(json.loads(message.value()).get("id")))
 
             if event_id is None:
@@ -78,6 +78,9 @@ class Acknowledger:
 
             if self.check_update_cache(event_id, message.topic()):
                 self.ack_complete(event_id)
+
+    def __enter__(self):
+        return self
 
     def __exit__(self, *exc):
         self.consumer.close()
