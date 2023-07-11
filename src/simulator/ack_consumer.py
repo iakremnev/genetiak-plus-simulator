@@ -79,8 +79,11 @@ class Acknowledger:
             if self.check_update_cache(event_id, message.topic()):
                 self.ack_complete(event_id)
 
+    def __exit__(self, *exc):
+        self.consumer.close()
+
 
 if __name__ == "__main__":
     with shelve.open("ack_cache.db") as storage:
-        acknowledger = Acknowledger(storage)
-        acknowledger.run()
+        with Acknowledger(storage) as acknowledger:
+            acknowledger.run()
