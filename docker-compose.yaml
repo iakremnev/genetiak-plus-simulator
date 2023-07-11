@@ -4,9 +4,15 @@ services:
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     expose:
       - 9092
+
+  kafka-init:
+    image: bitnami/kafka:3.2.3
+    command: bash -c 'sleep 5 && kafka-topics.sh --create --topic topic1 --bootstrap-server kafka:9092 &&
+            kafka-topics.sh --create --topic topic2 --bootstrap-server kafka:9092 &&
+            kafka-topics.sh --create --topic topic3 --bootstrap-server kafka:9092 &&
+            kafka-topics.sh --create --topic ack --bootstrap-server kafka:9092'
 
   kafka-ui:
     image: provectuslabs/kafka-ui
@@ -18,26 +24,29 @@ services:
 
   producer:
     build: .
-    command: "bash -c 'sleep 8 && python -m simulator.producer --delay 400 /data/sim_file1.xlsx /data/sim_file2.xlsx /data/sim_file3.xlsx'"
+    command: bash -c 'sleep 10 && python -m simulator.producer --delay 400 /data/sim_file1.xlsx /data/sim_file2.xlsx /data/sim_file3.xlsx'
     environment:
       - KAFKA_SERVER=kafka:9092
     depends_on:
       - kafka
     volumes:
       - ./data:/data
+    restart: on-failure
 
   db_consumer:
     build: .
-    command: "bash -c 'sleep 12 && python -m simulator.db_consumer'"
+    command: python -m simulator.db_consumer
     environment:
       - KAFKA_SERVER=kafka:9092
     depends_on:
       - kafka
+    restart: on-failure
 
   ack_consumer:
     build: .
-    command: "bash -c 'sleep 12 && python -m simulator.ack_consumer'"
+    command: python -m simulator.ack_consumer
     environment:
       - KAFKA_SERVER=kafka:9092
     depends_on:
       - kafka
+    restart: on-failure
