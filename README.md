@@ -60,7 +60,7 @@ $ ./test/integration/test_db_delivery.sh
 
 Testing Kafka topic states is out of scope of this project but can be easily inspected using UI at http://localhost:8080 while the cluster is up.
 
-## Points of interest
+## Consideration
 
 * Producer simulates data source concurrency through multithreading, which is a good mechanism even in presence of GIL.
 * Data models are described with SQLAlchemy declarative ORMs, but [pydantic](https://github.com/tiangolo/pydantic-sqlalchemy) or [marshmallow](https://github.com/marshmallow-code/marshmallow-sqlalchemy) can be used to more precisely validate data integrity.
