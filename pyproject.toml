@@ -19,7 +19,7 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = ["ruff", "black"]
-test = ["pytest"]
+test = ["pytest", "pytest-cov"]
 
 [tool.ruff]
 line-length = 120
