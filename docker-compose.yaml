@@ -29,6 +29,7 @@ services:
       - KAFKA_SERVER=kafka:9092
     depends_on:
       - kafka
+      - kafka-init
     volumes:
       - ./data:/data
     restart: on-failure
@@ -40,6 +41,9 @@ services:
       - KAFKA_SERVER=kafka:9092
     depends_on:
       - kafka
+      - kafka-init
+    volumes:
+      - ./database/features.db:/opt/database/features.db
     restart: on-failure
 
   ack_consumer:
@@ -49,4 +53,5 @@ services:
       - KAFKA_SERVER=kafka:9092
     depends_on:
       - kafka
+      - kafka-init
     restart: on-failure

@@ -7,12 +7,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from simulator.orm import Base as ORMBase
-from simulator.orm import DataModel2, DataModel1, DataModel3
+from simulator.orm import DataModel1, DataModel2, DataModel3
 
-TOPIC_TO_ORM = {"topic1": DataModel2, "topic2": DataModel1, "topic3": DataModel3}
+TOPIC_TO_ORM = {"topic1": DataModel1, "topic2": DataModel2, "topic3": DataModel3}
+KAFKA_SERVER = os.getenv("KAFKA_SERVER")
 
 
-def dump_event_to_db(event: dict, topic: str) -> None:
+def write_event_to_db(event: dict, topic: str) -> None:
     """Translates event to ORM instance and dumps it to the DB
 
     Parameters
@@ -50,7 +51,7 @@ def run(consumer: Consumer) -> None:
 
             print(f"Received message in topic {message.topic()} @ offset {message.offset()}")
             payload = json.loads(message.value())
-            dump_event_to_db(payload, message.topic())
+            write_event_to_db(payload, message.topic())
 
     except KeyboardInterrupt:
         pass
@@ -58,14 +59,11 @@ def run(consumer: Consumer) -> None:
 
 if __name__ == "__main__":
     # Set up database and connection
-    engine = create_engine("sqlite://", echo=False)
+    engine = create_engine("sqlite:////opt/database/features.db", echo=True)
     ORMBase.metadata.create_all(engine)
 
     # Set up Kafka consumer
-    kafka_server_addr = os.getenv("KAFKA_SERVER")
-    consumer = Consumer(
-        {"bootstrap.servers": kafka_server_addr, "group.id": "db_dump", "auto.offset.reset": "earliest"}
-    )
+    consumer = Consumer({"bootstrap.servers": KAFKA_SERVER, "group.id": "db_dump", "auto.offset.reset": "earliest"})
     consumer.subscribe(list(TOPIC_TO_ORM.keys()))
 
     run(consumer)

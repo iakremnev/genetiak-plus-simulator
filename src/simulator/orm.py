@@ -8,10 +8,10 @@ class Base(DeclarativeBase):
     pass
 
 
-class DataModel1(Base):
+class DataModel2(Base):
     """Declarative ORM example"""
 
-    __tablename__ = "data1"
+    __tablename__ = "data2"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     feature1: Mapped[Optional[int]]
@@ -35,8 +35,8 @@ def create_table(table_name: str, feature_column_names: list[str], feature_colum
     )
 
 
-class DataModel2(Base):
-    __table__ = create_table("data2", [f"feature{i}" for i in range(1, 30)])
+class DataModel1(Base):
+    __table__ = create_table("data1", [f"feature{i}" for i in range(1, 30)])
 
 
 class DataModel3(Base):
