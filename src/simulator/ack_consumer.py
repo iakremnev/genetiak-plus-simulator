@@ -7,6 +7,7 @@ from confluent_kafka import Consumer, Producer
 
 KAFKA_SERVER = os.getenv("KAFKA_SERVER")
 TOPICS = ["topic1", "topic2", "topic3"]
+ACK_TOPIC = "ack"
 
 
 class Acknowledger:
@@ -55,7 +56,7 @@ class Acknowledger:
         self.producer.poll(0)
 
         data = {"id": id}
-        self.producer.produce("ack", json.dumps(data).encode())
+        self.producer.produce(ACK_TOPIC, json.dumps(data).encode())
 
         self.producer.flush()
 
